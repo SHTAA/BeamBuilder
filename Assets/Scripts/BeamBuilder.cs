@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BeamBuild : MonoBehaviour
@@ -16,9 +17,11 @@ public class BeamBuild : MonoBehaviour
 
     public Vector3 startMousePosition;
     public Vector3 currentMousePosition;
+
+    [SerializeField] private snapgrid snapTarget;
     void Start()
     {
-
+ 
     }
 
     // Update is called once per frame
@@ -31,12 +34,12 @@ public class BeamBuild : MonoBehaviour
         {
             if (!hasSaved)
             {
-                startMousePosition = mouseWorldPosition;
+                startMousePosition = snapTarget.transform.position;
                 hasSaved = true;
             }
 
 
-            currentMousePosition = mouseWorldPosition;
+            currentMousePosition = snapTarget.transform.position;
             Debug.Log(startMousePosition);
             Debug.Log(currentMousePosition);
 

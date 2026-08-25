@@ -1,35 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class BeamBuild : MonoBehaviour
 {
-    // Start is called before the first frame update
-
     [SerializeField] private Camera mainCamera;
-
-    public GameObject objectsToSpawn;
-
-    public Transform spawnPoint;
-
-    private bool hasSaved = false;
-
-    public Vector3 startMousePosition;
-    public Vector3 currentMousePosition;
-
+    [SerializeField] private GameObject objectsToSpawn;
+    [SerializeField] private GameObject pivotPrefab;
+    [SerializeField] private Transform spawnPoint;
     [SerializeField] private snapgrid snapTarget;
-    void Start()
-    {
- 
-    }
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private float pivotSearchRadius = 0.05f;
+
+    private bool hasSaved;
+    private Vector3 startMousePosition;
+    private Vector3 currentMousePosition;
+
+    private void Update()
     {
         Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPosition.z = 0f;
+
         transform.position = mouseWorldPosition;
+
         if (Input.GetMouseButton(0))
         {
             if (!hasSaved)
@@ -38,39 +29,96 @@ public class BeamBuild : MonoBehaviour
                 hasSaved = true;
             }
 
-
             currentMousePosition = snapTarget.transform.position;
-            Debug.Log(startMousePosition);
-            Debug.Log(currentMousePosition);
-
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && hasSaved)
         {
-            Vector3 direction = currentMousePosition - startMousePosition;
-            float distance = direction.magnitude;
-
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            GameObject spawnedobj = Instantiate(objectsToSpawn, spawnPoint.position, Quaternion.Euler(0, 0, angle));
-            Rigidbody2D rb = spawnedobj.GetComponent<Rigidbody2D>();
-
-            Vector3 currentScale = spawnedobj.transform.localScale;
-            Vector3 positionObj = spawnedobj.transform.localPosition;
-
-            // 3. Change only the X component
-            currentScale.x = Vector3.Distance(startMousePosition, currentMousePosition); // Set your desired X scale here
-            positionObj = (startMousePosition + currentMousePosition) / 2;
-            // 4. Assign the modified vector back to the object
-            spawnedobj.transform.localScale = currentScale;
-            spawnedobj.transform.localPosition = positionObj;
-
-            if (rb != null)
-            {
-                // Example: Push the object forward upon spawning
-                rb.AddForce(spawnPoint.forward * 500f);
-            }
+            BuildBeam(startMousePosition, currentMousePosition);
             hasSaved = false;
         }
+    }
 
+    private void BuildBeam(Vector3 startPosition, Vector3 endPosition)
+    {
+        Vector3 direction = endPosition - startPosition;
+        float distance = direction.magnitude;
+
+        if (distance <= 0.001f)
+            return;
+
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        Pivot startPivot = GetOrCreatePivot(startPosition);
+        Pivot endPivot = GetOrCreatePivot(endPosition);
+
+        GameObject beam = Instantiate(
+            objectsToSpawn,
+            (startPosition + endPosition) / 2f,
+            Quaternion.Euler(0f, 0f, angle)
+        );
+
+        Vector3 scale = beam.transform.localScale;
+        scale.x = distance;
+        beam.transform.localScale = scale;
+
+        HingeJoint2D[] hinges = beam.GetComponents<HingeJoint2D>();
+
+        if (hinges.Length < 2)
+        {
+            hinges = new HingeJoint2D[2];
+
+            if (beam.GetComponents<HingeJoint2D>().Length == 0)
+                hinges[0] = beam.AddComponent<HingeJoint2D>();
+            else
+                hinges[0] = beam.GetComponents<HingeJoint2D>()[0];
+
+            hinges[1] = beam.AddComponent<HingeJoint2D>();
+        }
+        else
+        {
+            hinges[0] = hinges[0];
+            hinges[1] = hinges[1];
+        }
+
+        ConnectHinge(hinges[0], startPivot, startPosition, beam.transform);
+        ConnectHinge(hinges[1], endPivot, endPosition, beam.transform);
+    }
+
+    private void ConnectHinge(
+        HingeJoint2D hinge,
+        Pivot pivot,
+        Vector3 worldPosition,
+        Transform beamTransform)
+    {
+        hinge.connectedBody = pivot.Body;
+        hinge.autoConfigureConnectedAnchor = false;
+        hinge.connectedAnchor = Vector2.zero;
+
+        Vector3 localPosition =
+            beamTransform.InverseTransformPoint(worldPosition);
+
+        hinge.anchor = localPosition;
+    }
+
+    private Pivot GetOrCreatePivot(Vector3 position)
+    {
+        Pivot[] pivots = FindObjectsOfType<Pivot>();
+
+        foreach (Pivot pivot in pivots)
+        {
+            if (Vector2.Distance(pivot.transform.position, position) <= pivotSearchRadius)
+            {
+                return pivot;
+            }
+        }
+
+        GameObject newPivot = Instantiate(
+            pivotPrefab,
+            position,
+            Quaternion.identity
+        );
+
+        return newPivot.GetComponent<Pivot>();
     }
 }

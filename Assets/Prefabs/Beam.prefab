@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2581466940163416505}
   - component: {fileID: 4013650613794071039}
   - component: {fileID: 4122566787873549636}
-  m_Layer: 0
-  m_Name: plank
+  m_Layer: 6
+  m_Name: Plank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,7 +142,8 @@ GameObject:
   - component: {fileID: 9056918462678134648}
   - component: {fileID: 1525410338049637855}
   - component: {fileID: 2779346502961707172}
-  m_Layer: 0
+  - component: {fileID: 8508083653406674527}
+  m_Layer: 6
   m_Name: Beam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +174,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7947786909114850981}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -242,3 +243,17 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: 0
     m_UpperAngle: 359
+--- !u!114 &8508083653406674527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947786909114850981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8d5efd8e1fd43b41bbac31f2d6e80da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structurePointPrefab: {fileID: 4721251885494929976, guid: 98a97622f0f7bc64dadf3588300a281b, type: 3}
+  pointSpacing: 0.25

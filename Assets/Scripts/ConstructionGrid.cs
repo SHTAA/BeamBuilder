@@ -44,7 +44,7 @@ public class ConstructionGrid : MonoBehaviour
 
             makeLine(new Vector3(leftEdge, currentY, 0f), new Vector3(rightEdge, currentY, 0f), 0.1f);
 
-            Debug.Log(y);
+            //Debug.Log(y);
 
         
         }
@@ -74,7 +74,7 @@ public class ConstructionGrid : MonoBehaviour
 
     public void makeLine(Vector3 startPos, Vector3 endPos, float opacity)
     {
-        GameObject lineObject = new GameObject("LineHolder", typeof(LineRenderer));
+        GameObject lineObject = new GameObject("Gridline", typeof(LineRenderer));
 
         LineRenderer lineRenderer1 = lineObject.GetComponent<LineRenderer>();
 

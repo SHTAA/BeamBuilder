@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class SimulationManager : MonoBehaviour
 {
     private bool simulationStarted;
+    [SerializeField] private ConstructionGrid grid;
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             StartSimulation();
+            grid.gridParent.SetActive(false);
         }
     }
 

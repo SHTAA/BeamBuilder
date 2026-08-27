@@ -77,9 +77,6 @@ public class BeamBuild : MonoBehaviour
 
         ConnectHinge(hinges[0], startPivot, startPosition, beam.transform);
         ConnectHinge(hinges[1], endPivot, endPosition, beam.transform);
-
-        StructuralIntegrity structuralIntegrity = beam.GetComponent<StructuralIntegrity>();
-        structuralIntegrity.CreateStructurePoints(distance);
     }
     private void ConnectHinge(HingeJoint2D hinge, Pivot pivot, Vector3 worldPosition, Transform beamTransform)
     {

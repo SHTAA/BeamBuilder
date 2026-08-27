@@ -13,8 +13,11 @@ public class ConstructionGrid : MonoBehaviour
     public float leftEdge;
     public float bottomEdge;
 
+    public GameObject gridParent;
     void Awake()
     {
+        gridParent = new GameObject("Grid");
+
         Camera cam = Camera.main;
 
         float totalHeight = 2f * cam.orthographicSize;
@@ -75,6 +78,7 @@ public class ConstructionGrid : MonoBehaviour
     public void makeLine(Vector3 startPos, Vector3 endPos, float opacity)
     {
         GameObject lineObject = new GameObject("Gridline", typeof(LineRenderer));
+        lineObject.transform.SetParent(gridParent.transform);
 
         LineRenderer lineRenderer1 = lineObject.GetComponent<LineRenderer>();
 

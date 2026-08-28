@@ -82,23 +82,18 @@ public class ConstructionGrid : MonoBehaviour
 
         LineRenderer lineRenderer1 = lineObject.GetComponent<LineRenderer>();
 
-        // Set the material
         lineRenderer1.material = new Material(Shader.Find("Sprites/Default"));
 
         Color lineColor = new Color(0.0f, 0.0f, 0.0f, opacity);
 
-        // Set the color
         lineRenderer1.startColor = lineColor;
         lineRenderer1.endColor = lineColor;
 
-        // Set the width
         lineRenderer1.startWidth = 0.04f;
         lineRenderer1.endWidth = 0.04f;
 
-        // Set the number of vertices
         lineRenderer1.positionCount = 2;
 
-        // Set the positions of the vertices
         lineRenderer1.SetPosition(0, startPos);
         lineRenderer1.SetPosition(1, endPos);
     }
